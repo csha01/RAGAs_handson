@@ -1,27 +1,44 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'C:\\Users\\csha0\\AppData\\Local\\Programs\\Python\\Python314\\python.exe'
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/csha01/RAGAs_handson.git'
             }
         }
+
         stage('Install') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '%PYTHON% -m pip install -r requirements.txt'
             }
         }
+
         stage('Test') {
             steps {
-                bat 'pytest'
+                bat '%PYTHON% -m pytest'
             }
         }
+
         stage('Run') {
             steps {
-                bat 'python app.py'
+                bat '%PYTHON% app.py'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline SUCCESS!'
+        }
+        failure {
+            echo 'Pipeline FAILED!'
         }
     }
 }
